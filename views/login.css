@@ -1,0 +1,43 @@
+body {
+	background-color: lightblue;
+	height: 100%;
+	width: 100%;
+}
+
+.container {
+	top: 20%;
+	position: absolute;
+	left: 35%;
+	width: 30%;
+	background-color: white;
+	padding: 30px;
+	border-radius: 30px;
+}
+
+.login {
+	margin-left: 10%;
+	font-size: 26px;
+	padding-bottom: 20px;
+}
+
+.error {
+	color: red;
+	margin-left: 10%;
+}
+.email {
+	margin-left: 10%;
+	width: 80%;
+	padding: 12px;
+	margin-bottom: 20px;
+	font-size: 18px;
+}
+
+.submit {
+	margin-left: 10%;
+	background-color: #5cb85c;
+	color: white;
+	width: 80%;
+	height: 30px;
+	border: 0;
+	border-radius: 3px;
+}

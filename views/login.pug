@@ -1,0 +1,12 @@
+head
+	title Notifier - Login
+	link(href='views/login.css', rel='stylesheet')
+body
+	div.container
+		div.login Log in
+		form(method='post', action='/login')
+			div
+				if error 
+					span.error #{error}
+				input(name='email', type='text', placeholder='Email').email
+			button.submit Submit

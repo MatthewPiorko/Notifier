@@ -1,0 +1,26 @@
+head
+	title Notifier - Edit Site
+	link(href='/views/editSite.css', rel='stylesheet')
+body
+	div.navbar
+		a(href='/logout').logout Logout
+	form(method='post').container
+		div
+			label Name
+			input(name='name', type='text', value=site.name)
+		br
+		div
+			label URL
+			input(name='url', type='text', value=site.url)
+		br
+		div
+			label Selector
+			input(name='selector', type='text', value=site.selector)
+		br
+		div
+			label Rank
+			select(name='rank')
+				option(value='1', selected=rank==1) 1
+				option(value='2', selected=rank==2) 2
+				option(value='3', selected=rank==3) 3
+		button.submit Edit

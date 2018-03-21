@@ -1,0 +1,60 @@
+body {
+	background-color: lightblue;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+}
+
+.navbar {
+	height: 30px;
+	background-color: white;
+}
+
+.navbar > .logout {
+	float: right;
+	margin-right: 45px;
+	padding-top: 5px;
+}
+
+.container {
+	top: 20%;
+	position: absolute;
+	left: 25%;
+	width: 50%;
+	background-color: white;
+	padding: 30px;
+	border-radius: 30px;
+}
+
+div {
+	height: 30px;
+}
+
+label {
+	font-size: 18px;
+}
+
+input, select {
+	font-size: 18px;
+	margin-top: -2px;
+	float: right;
+	width: 80%;
+}
+
+.email {
+	margin-left: 10%;
+	width: 80%;
+	padding: 12px;
+	margin-bottom: 20px;
+	font-size: 18px;
+}
+
+.submit {
+	margin-left: 10%;
+	margin-top: 10px;
+	background-color: #5cb85c;
+	color: white;
+	width: 80%;
+	height: 30px;
+	border: 0;
+}
