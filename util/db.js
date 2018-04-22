@@ -24,14 +24,10 @@ module.exports = {
 		}
 		return new Subscription(results[0]);
 	},
-	getUserWithSites: async (user) => {
+	getUserWithSites: async (email) => {
 		//TODO id clash between site and subscription
-		let results = (await pool.query('SELECT *, sub.id as id FROM subscription sub JOIN site s ON sub.site_id=s.id WHERE sub.email=$1 ORDER BY sub.rank, s.name', [user])).rows;
-		if (results.length === 0) {
-			//TODO error handling
-			return undefined;
-		}
-		return new User(results[0].email, results.map(result => new Subscription(result)));
+		let results = (await pool.query('SELECT *, sub.id as id FROM subscription sub JOIN site s ON sub.site_id=s.id WHERE sub.email=$1 ORDER BY sub.rank, s.name', [email])).rows;
+		return new User(email, results.map(result => new Subscription(result)));
 	},
 	updateSiteContent: async (mostRecentContent, url) => {
 		let results = await pool.query('UPDATE site SET most_recent=$1, updated_at=NOW() WHERE url=$2', [mostRecentContent, url]);
@@ -45,7 +41,7 @@ module.exports = {
 	addSite: async (name, url, selector, email, rank) => {
 		let inserted = await pool.query('INSERT INTO site (name, url, selector, updated_at) VALUES ($1, $2, $3, NOW()) RETURNING *', [name, url, selector]);
 		let newId = inserted.rows[0].id;
-		let subscription = await pool.query('INSERT INTO subscription (email, site_id, last_seen, rank) VALUES ($1, $2, $3, NOW())', [email, newId, rank]);
+		let subscription = await pool.query('INSERT INTO subscription (email, site_id, last_seen, rank) VALUES ($1, $2, NOW(), $3)', [email, newId, rank]);
 	},
 	markSubscriptionAsViewed: async (id) => {
 		let results = await pool.query('UPDATE subscription SET last_seen=NOW() WHERE id=$1', [id]);

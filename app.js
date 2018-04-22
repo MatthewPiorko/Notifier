@@ -5,8 +5,6 @@ const cookieParser = require('cookie-parser');
 const moment = require('moment');
 const Site = require('./classes/site')
 
-//TODO YT doesn't work
-
 const util = require('./util/util');
 const config = require('./config');
 const db = require('./util/db');
@@ -59,13 +57,23 @@ app.get('/viewAll', async function(req, res) {
 
 	let subscriptionsByRank = user.subscriptions.reduce((acc, sub) => {
 		let index = sub.rank - 1;
-		if (acc[index]) {
-			acc[index].push(sub);
-		} else {
-			acc[index] = [sub];
-		}
+        acc[index] = (acc[index] || []).push(sub)
 		return acc;
 	}, {});
+
+    subscriptionsByRank.map(rank => {
+        subscriptionsByRank[rank] = subscriptionsByRank[rank].sort((sub1, sub2) => {
+            let isUpdated1 = sub1.site.updatedAt.isAfter(sub1.lastSeen)
+            let isUpdated2 = sub2.site.updatedAt.isAfter(sub2.lastSeen)
+            if (isUpdated1 == isUpdated2) {
+                return sub1.site.name > sub2.site.name;
+            } else if (isUpdated1) {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
+    }
 
   	res.render('viewAll', { user, subscriptionsByRank });
 });
