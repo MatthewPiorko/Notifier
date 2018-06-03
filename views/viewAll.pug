@@ -1,34 +1,35 @@
 head
-	title Notifier
-	link(href='views/viewAll.css', rel='stylesheet')
+    title Notifier
+    link(href='views/viewAll.css', rel='stylesheet')
 body
-	div.navbar
-		a(href='/logout').logout Logout
-	each subscriptions, key in subscriptionsByRank
-		if subscriptionsByRank[key-1] || subscriptionsByRank[key-2]
-			hr
-		each sub in subscriptions
-			if sub.site.updatedAt.isAfter(sub.lastSeen)
-				div.site.new
-					div 
-						span #{sub.site.name} was updated on #{sub.site.updatedAt.format('MMMM Do, hh:mm A')}
-						form(method='post', action='/unsubscribe').unsub
-							button(name='id', value=sub.id) &#10060;
-						form(method='get', action='/editSite/' + sub.id).edit
-							button &#9998;
-					a(href=sub.site.url, target='_blank').link View Now!
-					span
-						form(method='post', action='/update').form
-								button(name='id', value=sub.id) Mark Viewed
-			else
-				div.site.seen
-					div 
-						span #{sub.site.name} has no new updates. It was last updated on #{sub.site.updatedAt.format('MMMM Do')}.
-						form(method='post', action='/unsubscribe').unsub
-							button(name='id', value=sub.id) &#10060;
-						form(method='get', action='/editSite/' + sub.id).edit
-							button &#9998;
-					a(href=sub.site.url, target='_blank').link View Site
-	br
-	div.add
-		a(href='/addSite') Add New Site
+    div.navbar
+        div.updated Last update: #{lastUpdated.format('h:mm A')}
+        a(href='/logout').logout Logout
+    each subscriptions, key in subscriptionsByRank
+        if subscriptionsByRank[key-1] || subscriptionsByRank[key-2]
+            hr
+        each sub in subscriptions
+            if sub.site.updatedAt.isAfter(sub.lastSeen)
+                div.site.new
+                    div 
+                        span #{sub.site.name} was updated on #{sub.site.updatedAt.format('MMMM Do, h:mm A')}
+                        form(method='post', action='/unsubscribe').unsub
+                            button(name='id', value=sub.id) &#10060;
+                        form(method='get', action='/editSite/' + sub.id).edit
+                            button &#9998;
+                    a(href=sub.site.url, target='_blank').link View Now!
+                    span
+                        form(method='post', action='/update').form
+                                button(name='id', value=sub.id) Mark Viewed
+            else
+                div.site.seen
+                    div 
+                        span #{sub.site.name} has no new updates. It was last updated on #{sub.site.updatedAt.format('MMMM Do')}.
+                        form(method='post', action='/unsubscribe').unsub
+                            button(name='id', value=sub.id) &#10060;
+                        form(method='get', action='/editSite/' + sub.id).edit
+                            button &#9998;
+                    a(href=sub.site.url, target='_blank').link View Site
+    br
+    div.add
+        a(href='/addSite') Add New Site

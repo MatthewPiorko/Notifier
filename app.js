@@ -16,6 +16,8 @@ app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.listen(config.port, () => { util.debug(`App started on port ${config.port}`); });
 
+let lastUpdated = moment();
+
 let authenticator = async function(req, res, next) {
 	if (req.url !== '/login' && !(req.cookies && req.cookies[config.cookieName])) {
 		res.redirect('/login');
@@ -57,25 +59,29 @@ app.get('/viewAll', async function(req, res) {
 
 	let subscriptionsByRank = user.subscriptions.reduce((acc, sub) => {
 		let index = sub.rank - 1;
-        acc[index] = (acc[index] || []).push(sub)
-		return acc;
+        if (acc[index]) {
+            acc[index].push(sub);
+        } else {
+            acc[index] = [sub]
+        }
+        return acc;
 	}, {});
 
-    subscriptionsByRank.map(rank => {
+    Object.keys(subscriptionsByRank).forEach(rank => {
         subscriptionsByRank[rank] = subscriptionsByRank[rank].sort((sub1, sub2) => {
             let isUpdated1 = sub1.site.updatedAt.isAfter(sub1.lastSeen)
             let isUpdated2 = sub2.site.updatedAt.isAfter(sub2.lastSeen)
             if (isUpdated1 == isUpdated2) {
-                return sub1.site.name > sub2.site.name;
+                return sub1.site.name.localeCompare(sub2.site.name);
             } else if (isUpdated1) {
                 return -1;
             } else {
                 return 1;
             }
         });
-    }
+    });
 
-  	res.render('viewAll', { user, subscriptionsByRank });
+  	res.render('viewAll', { user, subscriptionsByRank, lastUpdated });
 });
 
 app.get('/editSite/:id', async function(req, res) {
@@ -83,7 +89,7 @@ app.get('/editSite/:id', async function(req, res) {
 
 	const subscription = await db.getSiteById(id);
 
-	res.render('editSite', {...subscription});
+	res.render('createorEdit', {...subscription, title: "Edit Site" });
 });
 
 app.post('/editSite/:id', async function(req, res) {
@@ -98,7 +104,7 @@ app.post('/editSite/:id', async function(req, res) {
 });
 
 app.get('/addSite', function(req, res) {
-	res.render('addSite');
+	res.render('createorEdit', { title: "Add Site" });
 });
 
 app.post('/addSite', async function(req, res) {
@@ -141,6 +147,7 @@ let updateSite = async function(site) {
 		util.debug(`Site ${site.name} at ${site.url} does not exist`);
 		return;
 	}
+
 	let newest = util.queryDOM(newestDOM, site.selector);
 
 	if (!newest) {
@@ -157,6 +164,7 @@ let updateSite = async function(site) {
 
 let updateAllSites = async function() {
 	let sites = await db.getAllSites();
+    lastUpdated = moment();
 
 	util.debug(`Checking for site updates at ${moment()}`);
 	sites.forEach(async site => {

@@ -15,6 +15,12 @@ body {
 	margin-right: 45px;
 }
 
+.navbar > .updated {
+    float: left;
+    padding-top: 5px;
+    margin-left: 75px;
+}
+
 .site {
 	font-size: 16px;
 	padding: 5px;

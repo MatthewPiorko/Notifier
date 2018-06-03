@@ -1,0 +1,26 @@
+head
+    title Notifier - #{title}
+    link(href='/views/createOrEdit.css', rel='stylesheet')
+body
+    div.navbar
+        a(href='/logout').logout Logout
+    form(method='post').container
+        div
+            label Name
+            input(name='name', type='text', value=`${site ? site.name : ""}`, autofocus)
+        br
+        div
+            label URL
+            input(name='url', type='text', value=`${site ? site.url : ""}`)
+        br
+        div
+            label Selector
+            input(name='selector', type='text', value=`${site ? site.selector : ""}`, placeholder='Leave blank to select whole page')
+        br
+        div
+            label Rank
+            select(name='rank')
+                option(value='1', selected=rank==1) 1
+                option(value='2', selected=!rank || rank==2) 2
+                option(value='3', selected=rank==3) 3
+        button.submit Edit
