@@ -8,6 +8,10 @@ class Subscription {
 		this.lastSeen = moment(object.last_seen);
 		this.rank = object.rank;
 	}
+
+    toString() {
+        return `${this.id} - ${this.site.toString()}`;
+    }
 }
 
 module.exports = Subscription;

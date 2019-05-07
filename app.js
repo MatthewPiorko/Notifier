@@ -89,16 +89,15 @@ app.get('/editSite/:id', async function(req, res) {
 
 	const subscription = await db.getSiteById(id);
 
-	res.render('createorEdit', {...subscription, title: "Edit Site" });
+	res.render('createOrEdit', {...subscription, title: "Edit Site" });
 });
 
 app.post('/editSite/:id', async function(req, res) {
-	const email = req.cookies[config.cookieName];
 	const { id } = req.params;
 	const { name, url, selector, rank } = req.body;
 
-	await db.editSite(id, name, url, selector);
-	await db.editSubscription(id, email, rank);
+	let updatedSubscription = await db.editSubscription(id, name, url, selector, rank);
+    await updateSite(updatedSubscription.site);
 
 	res.redirect('/viewAll');
 });
@@ -110,17 +109,10 @@ app.get('/addSite', function(req, res) {
 app.post('/addSite', async function(req, res) {
 	const { name, url, selector, rank } = req.body;
 	const email = req.cookies[config.cookieName];
-	let site = new Site({
-		name: name, 
-		url: url, 
-		selector: selector,
-		most_recent: undefined,
-		lastSeen: undefined,
-		updatedAt: undefined
-	});
-	util.debug(`Adding {${url}} with selector {${selector}}`);
-	await db.addSite(name, url, selector, email, rank);
+
+	let site = await db.addSite(name, url, selector, email, rank);
 	await updateSite(site);
+
 	res.redirect('/viewAll');
 });
 
@@ -157,8 +149,8 @@ let updateSite = async function(site) {
 	newest = newest.outerHTML;
 
 	if (newest !== site.mostRecent) {
-		await db.updateSiteContent(newest, site.url);
-		util.debug(`New data for {${site.name}} at ${new Date()}`);
+		await db.updateSiteContent(newest, site.id);
+		util.debug(`New data for {${site.name} (${site.id})} at ${new Date()}`);
 	}
 };
 
